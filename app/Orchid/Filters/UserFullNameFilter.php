@@ -16,6 +16,7 @@ class UserFullNameFilter extends Filter
         'name'
     ];
 
+    
     /**
      * @return string
      */
