@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Mapping\UsersMigrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::prefix('users')->group(function () {
     Route::get('register/{role:slug}', [UserController::class, 'register'])->name('users.register');
     Route::post('register', [UserController::class, 'store'])->name('users.store');
 });
+
+Route::get('/user/migration', [UsersMigrationController::class, 'getallUsers']);
