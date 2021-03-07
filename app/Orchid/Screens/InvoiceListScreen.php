@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use Orchid\Screen\Actions\Link;
 use Orchid\Support\Facades\Layout;
 use App\Orchid\Layouts\InvoiceListLayout;
+use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
 
 class InvoiceListScreen extends Screen
@@ -57,7 +58,7 @@ class InvoiceListScreen extends Screen
      * @return \Orchid\Screen\Layout[]|string[]
      */
     public function layout(): array
-    {   
+    {
         return [
             InvoiceListLayout::class,
             Layout::modal('invoiceModal', [
@@ -81,10 +82,16 @@ class InvoiceListScreen extends Screen
     }
 
     public function asyncGetData($invoice){
-        
+
         return [
             'invoice' => $invoice,
         ];
+    }
+
+    public function UpdateInvoiceModalHandler($data, Request $request){
+        $request->validate([
+            'invoice.credit_days' => 'max:1'
+        ]);
     }
 
 }

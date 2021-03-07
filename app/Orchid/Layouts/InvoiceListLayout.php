@@ -2,12 +2,11 @@
 
 namespace App\Orchid\Layouts;
 
+use App\Models\Invoice;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
-use Orchid\Screen\Actions\Link;
-use App\Models\Invoice;
-use Orchid\Support\Facades\Layout;
-use Orchid\Screen\Actions\ModalToggle;
 
 class InvoiceListLayout extends Table
 {
@@ -35,25 +34,26 @@ class InvoiceListLayout extends Table
                         ->route('platform.invoice.edit', $invoice);
                 }),
             TD::make('reference_number', 'Shipment reference number')
-            ->render(function (Invoice $invoice) {
-                return Link::make($invoice->reference_number)
-                    ->route('platform.invoice.edit', $invoice);
-            }),
+                ->render(function (Invoice $invoice) {
+                    return Link::make($invoice->reference_number)
+                        ->route('platform.invoice.edit', $invoice);
+                }),
             TD::make('credit_days', 'Credit days')
-            ->render(function (Invoice $invoice) {
-                return Link::make($invoice->credit_days)
-                    ->route('platform.invoice.edit', $invoice);
-            }),
+                ->render(function (Invoice $invoice) {
+                    return Link::make($invoice->credit_days)
+                        ->route('platform.invoice.edit', $invoice);
+                }),
             TD::make('Edit')
-            ->render(function (Invoice $invoice) {
-                return ModalToggle::make('Update')
+                ->render(function (Invoice $invoice) {
+                    return ModalToggle::make('Update')
                         ->icon('fa.pencil')
                         ->modal('invoiceModal')
                         ->modalTitle('Invoice')
+                        ->method('UpdateInvoiceModalHandler')
                         ->asyncParameters([
                             'invoice' => $invoice,
                         ]);
-            }),      
+                }),
         ];
     }
 
