@@ -17,6 +17,10 @@ use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
+use App\Orchid\Screens\InvoiceEditScreen;
+use App\Orchid\Screens\InvoiceListScreen;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -113,3 +117,10 @@ Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.exampl
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
 //Route::screen('idea', 'Idea::class','platform.screens.idea');
+
+Route::screen('invoice/{invoice?}', InvoiceEditScreen::class)
+    ->name('platform.invoice.edit');
+
+Route::screen('invoices', InvoiceListScreen::class)
+    ->name('platform.invoice.list');
+

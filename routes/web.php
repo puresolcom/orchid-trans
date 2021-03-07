@@ -3,7 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Mapping\UsersMigrationController;
-
+use App\Http\Controllers\Invoice\InvoiceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,3 +24,4 @@ Route::prefix('users')->group(function () {
 });
 
 Route::get('/user/migration', [UsersMigrationController::class, 'getallUsers']);
+Route::get('/invoice/modal',[InvoiceController::class,'getInvoiceEditModal'])->name('invoice.data.modal');
