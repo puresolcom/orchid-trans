@@ -9,6 +9,8 @@ use Orchid\Support\Facades\Layout;
 use App\Orchid\Layouts\InvoiceListLayout;
 use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
+use App\Services\Invoice\InvoiceService;
+use Redirect;
 
 class InvoiceListScreen extends Screen
 {
@@ -31,6 +33,15 @@ class InvoiceListScreen extends Screen
      *
      * @return array
      */
+
+    protected $invoiceService; 
+
+    public function __construct(InvoiceService $invoiceService)
+    {
+        $this->invoiceService = $invoiceService;
+    }
+
+
     public function query(): array
     {
         return [
@@ -63,6 +74,8 @@ class InvoiceListScreen extends Screen
             InvoiceListLayout::class,
             Layout::modal('invoiceModal', [
                 Layout::rows([
+                    Input::make('invoice.id')
+                    ->type('hidden'),
                     Input::make('invoice.number')
                     ->title('Invoice number')
                     ->placeholder('Invoice number'),
@@ -89,9 +102,17 @@ class InvoiceListScreen extends Screen
     }
 
     public function UpdateInvoiceModalHandler($data, Request $request){
+        
         $request->validate([
-            'invoice.credit_days' => 'max:1'
+            'invoice.credit_days' => 'max:30'
         ]);
+
+        $response=$this->invoiceService->update($request);
+        if($response == 1){
+            return Redirect::back();
+        }else{
+            return Redirect::back()->withErrors($response);
+        }
     }
 
 }
