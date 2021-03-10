@@ -6,6 +6,8 @@ use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Group;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\TextArea;
@@ -15,6 +17,10 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Auth;
+use App\Models\AdditionalCharge;
+use App\Models\InvoiceAdditionalCost;
+use App\Orchid\Layouts\ChargeLine;
+use App\View\Components\CustomButton;
 
 class InvoiceEditScreen extends Screen
 {
@@ -49,7 +55,7 @@ class InvoiceEditScreen extends Screen
         }
 
         return [
-            'invoice' => $invoice
+            'invoice' => $invoice,
         ];
     }
 
@@ -75,6 +81,7 @@ class InvoiceEditScreen extends Screen
                 ->icon('trash')
                 ->method('remove')
                 ->canSee($this->exists),
+               
         ];
     }
 
@@ -105,9 +112,15 @@ class InvoiceEditScreen extends Screen
 
                 Input::make('invoice.credit_days')
                     ->title('Credit days')
-                    ->placeholder('Credit days'),
-
-            ])
+                    ->placeholder('Credit days'),           
+                    
+            ]),
+            
+            Layout::component(CustomButton::class),
+            
+            ChargeLine::class,
+            
+            
         ];
     }
 
@@ -127,5 +140,11 @@ class InvoiceEditScreen extends Screen
         Alert::info('You have successfully deleted the invoice.');
 
         return redirect()->route('platform.invoice.list');
+    }
+
+    public function addMore(){
+        return [
+            ChargeLine::class
+        ];
     }
 }

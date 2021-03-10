@@ -18,6 +18,10 @@ class InvoiceController extends Controller
     public function getInvoiceEditModal(Request $request){
         $id = $request->input('id');
         $invoice = $this->invoiceService->getInvoiceById($id);
-        return view('invoice.ajax.invoice-edit-modal',compact('invoice'));
+        return view('invoice.ajax.add-more-charge',compact('invoice'));
+    }
+
+    public function addMoreChargeLine(){
+        return view();
     }
 }

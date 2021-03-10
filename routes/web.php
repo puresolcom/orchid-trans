@@ -25,3 +25,4 @@ Route::prefix('users')->group(function () {
 
 Route::get('/user/migration', [UsersMigrationController::class, 'getallUsers']);
 Route::get('/invoice/modal',[InvoiceController::class,'getInvoiceEditModal'])->name('invoice.data.modal');
+Route::get('/invoice/add/more/chargeline',[InvoiceController::class,'addMoreChargeLine'])->name('invoice.add.more.charge');

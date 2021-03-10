@@ -16,7 +16,7 @@ class CreateInvoiceProcessesTable extends Migration
         Schema::create('invoice_processes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('invoice_id');
-            $table->integer('owner_id');
+            $table->unsignedBigInteger('owner_id');
             $table->tinyInteger('owner_role_id');
             $table->boolean('approved')->nullable()->default(null);
             $table->text('reason')->nullable()->default(null);
