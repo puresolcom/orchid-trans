@@ -47,12 +47,13 @@ var _default = /*#__PURE__*/function (_window$Controller) {
 
   _createClass(_default, [{
     key: "addMoreCharge",
-    value:
-    /**
-     *
-     */
-    function addMoreCharge() {
-      alert();
+    value: function addMoreCharge() {
+      alert('test');
+    }
+  }], [{
+    key: "target",
+    get: function get() {
+      return [];
     }
   }]);
 

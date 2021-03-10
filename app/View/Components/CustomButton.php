@@ -32,7 +32,9 @@ class CustomButton extends Component
     public function render()
     {
         return <<<'blade'
-            <button onclick="addMoreCharge()"> Add more charge  </button>
+        <div data-controller="invoice">
+                    <button data-action="click->invoice#addMoreCharge"> Add more charge  </button>
+                    </div<
         blade;
     }
 }

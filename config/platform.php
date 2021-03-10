@@ -94,7 +94,7 @@ return [
 
     'resource' => [
         'stylesheets' => [],
-        'scripts'     => ['js/dashboard.js'],
+        'scripts'     => [],
     ],
 
     /*

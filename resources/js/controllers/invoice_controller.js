@@ -1,10 +1,9 @@
 export default class extends window.Controller {
-    /**
-     *
-     */
-    
-    
-    addMoreCharge(){
-        alert();
+    static get target(){
+        return [];
+    }
+
+    addMoreCharge() {
+        alert('test');
     }
 }

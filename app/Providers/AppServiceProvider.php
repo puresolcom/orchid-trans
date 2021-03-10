@@ -24,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Dashboard $dashboard)
     {
-        $dashboard->registerResource('scripts','dashboard.js');
+        $dashboard->registerResource('scripts', asset('js/dashboard.js'));
     }
 }
