@@ -48,12 +48,28 @@ var _default = /*#__PURE__*/function (_window$Controller) {
   _createClass(_default, [{
     key: "addMoreCharge",
     value: function addMoreCharge() {
-      alert('test');
+      var domClone = $("fieldset:last").clone().insertAfter("fieldset:last");
+      $(domClone).find('.select2-container').remove();
+      var file = $(domClone).find('input[name=InvoiceAdditionalCost[attchment][]]');
+      $(domClone).find('div.dz-preview').remove();
+      $(file).val(' ');
+      $(domClone).find('.select2-selection__rendered').remove();
+      var btn = '<div data-controller="invoice"> <button data-action="click->invoice#removeCharge"> Remove </button></div>';
+      $(domClone).find('.bg-white').append(btn);
+    }
+  }, {
+    key: "removeCharge",
+    value: function removeCharge() {
+      var rm = $(this).closest("fieldset").remove();
     }
   }], [{
-    key: "target",
-    get: function get() {
-      return [];
+    key: "targets",
+    get:
+    /**
+     *
+     */
+    function get() {
+      return ["count"];
     }
   }]);
 

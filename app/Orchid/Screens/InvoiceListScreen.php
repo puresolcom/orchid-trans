@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
 use App\Services\Invoice\InvoiceService;
 use Redirect;
-
+//use App\Models\
 class InvoiceListScreen extends Screen
 {
     /**
@@ -45,7 +45,7 @@ class InvoiceListScreen extends Screen
     public function query(): array
     {
         return [
-            'invoices' => Invoice::paginate()
+            'invoices' => Invoice::with('invoiceMetas')->paginate()
         ];
     }
 
@@ -69,7 +69,7 @@ class InvoiceListScreen extends Screen
      * @return \Orchid\Screen\Layout[]|string[]
      */
     public function layout(): array
-    {
+    {   
         return [
             InvoiceListLayout::class,
             Layout::modal('invoiceModal', [
@@ -85,6 +85,9 @@ class InvoiceListScreen extends Screen
                     Input::make('invoice.credit_days')
                     ->title('Credit days')
                     ->placeholder('Credit days'),
+                    Input::make('invoiceMeta.invoice_date')
+                    ->title('Invoice date')
+                    ->placeholder('Invoice date'),
                 ]),
             ])
                 ->title('Window title')
@@ -95,7 +98,9 @@ class InvoiceListScreen extends Screen
     }
 
     public function asyncGetData($invoice){
-
+        $invoice = Invoice::where('id',$invoice['id'])
+        ->with('invoiceMetas')->first();
+        
         return [
             'invoice' => $invoice,
         ];

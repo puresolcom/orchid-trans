@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\Quill;
@@ -21,6 +22,10 @@ use App\Models\AdditionalCharge;
 use App\Models\InvoiceAdditionalCost;
 use App\Orchid\Layouts\ChargeLine;
 use App\View\Components\CustomButton;
+use Orchid\Attachment\File;
+use App\Services\Invoice\InvoiceService;
+use Redirect;
+use App\Models\InvoiceMeta;
 
 class InvoiceEditScreen extends Screen
 {
@@ -46,16 +51,29 @@ class InvoiceEditScreen extends Screen
 
     public $exists = false;
 
+    protected $invoiceService;
+
+    public function __construct(InvoiceService $invoiceService)
+    {
+        $this->invoiceService = $invoiceService;
+    }
+
     public function query(Invoice $invoice): array
     {
         $this->exists = $invoice->exists;
 
         if($this->exists){
             $this->name = 'Edit invoice';
+            $invoiceMeta = $invoice->invoiceMetas;
+            $invoiceAdditionalCost = $invoice->details;
+            //dd($invoiceMeta);
+
         }
 
         return [
             'invoice' => $invoice,
+            'invoiceMeta' => !empty($invoiceMeta)? $invoiceMeta : " ",
+            'invoiceAdditionalCost' => !empty($invoiceAdditionalCost)?$invoiceAdditionalCost: " "
         ];
     }
 
@@ -91,7 +109,7 @@ class InvoiceEditScreen extends Screen
      * @return \Orchid\Screen\Layout[]|string[]
      */
     public function layout(): array
-    {
+    {   //dd($invoice->invoiceMetas);
         return [
             Layout::rows([
                 Input::make('invoice.user_id')
@@ -116,21 +134,86 @@ class InvoiceEditScreen extends Screen
                     
             ]),
             
+            
+
+            Layout::rows([
+                Group::make([
+                    DateTimer::make('invoiceMeta.invoice_date')
+                    ->title('Invoice date')
+                    ->format('Y-m-d'),
+                    Input::make('invoiceMeta.invoice_number')
+                        ->title('Invoice number')
+                        ->placeholder('Invoice number'),
+                    Input::make('invoiceMeta.invoice_amount')
+                        ->title('Invoice amount')
+                        ->type('number')
+                        ->placeholder('Invoice amount'),
+                    Upload::make('invoiceMeta.carrier_invoice')
+                        ->title('Carrier invoice')
+                        ->maxFiles(1)
+                        //->maxFileSize(1024)
+                        ->groups('photo','documents'),    
+                ]),
+            ]),
+            Layout::rows([
+                Group::make([
+                    DateTimer::make('invoiceMeta.cn_date')
+                    ->title('Credit note date')
+                    ->format('Y-m-d'),
+                    Input::make('invoiceMeta.cn_number')
+                        ->title('Crdit days number')
+                        ->placeholder('Invoice number'),
+                    Input::make('invoiceMeta.cn_amount')
+                        ->title('Credit amount')
+                        ->type('number')
+                        ->placeholder('Invoice amount'),
+
+                    Upload::make('invoiceMeta.credit_note_file')
+                    ->title('Credit note file')
+                    ->maxFiles(1)
+                    //->maxFileSize(1024)
+                    ->groups('photo','documents'),    
+                ]),
+            ]),
+            
+            Layout::rows([
+                Group::make([
+                    Select::make('InvoiceAdditionalCost[description][]')
+                        ->title('Charge line')
+                        ->fromModel(AdditionalCharge::class, 'charges_line'),
+                    Input::make('InvoiceAdditionalCost[cost][]')
+                        ->title('Cost')
+                        ->placeholder('cost'),
+                    Input::make('InvoiceAdditionalCost[vat][]')
+                    ->title('Vat')
+                    ->placeholder('vat'),
+                    Upload::make('InvoiceAdditionalCost[attchment][]')
+                        ->title('Charge attachment')
+                        ->maxFiles(1)
+                        //->maxFileSize(1024)
+                        ->groups('photo','documents'), 
+                ]),
+            ]),
             Layout::component(CustomButton::class),
-            
-            ChargeLine::class,
-            
+            //ChargeLine::class,
             
         ];
     }
 
     public function createOrUpdate(Invoice $invoice, Request $request)
-    {
-        $invoice->fill($request->get('invoice'))->save();
-
-        Alert::info('You have successfully created an invoice.');
-
-        return redirect()->route('platform.invoice.list');
+    {   
+        //dd($request);
+        // $file = new File($request->file('invoiceMeta')['carrier_invoice']);
+        // $attachment = $file->load();
+        // dd($attachment);
+        //$invoice->fill($request->get('invoice'))->save();
+        $response = $this->invoiceService->createInvoice($request);
+        if(is_array($response)){
+            Alert::info('You have successfully created an invoice.');
+            return redirect()->route('platform.invoice.list');
+        }else{
+            return Redirect::back()->withErrors($response);
+        }
     }
 
     public function remove(Invoice $invoice)

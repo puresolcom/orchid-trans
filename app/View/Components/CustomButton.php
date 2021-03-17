@@ -34,7 +34,7 @@ class CustomButton extends Component
         return <<<'blade'
         <div data-controller="invoice">
                     <button data-action="click->invoice#addMoreCharge"> Add more charge  </button>
-                    </div<
+                    </div>
         blade;
     }
 }
