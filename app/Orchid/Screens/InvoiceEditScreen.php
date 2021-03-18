@@ -148,11 +148,12 @@ class InvoiceEditScreen extends Screen
                         ->title('Invoice amount')
                         ->type('number')
                         ->placeholder('Invoice amount'),
-                    Upload::make('invoiceMeta.carrier_invoice')
+                    Upload::make('invoice.carrier_invoice')
                         ->title('Carrier invoice')
                         ->maxFiles(1)
                         //->maxFileSize(1024)
-                        ->groups('photo','documents'),    
+                        ->groups('photo','documents')
+                        ->targetId(),    
                 ]),
             ]),
             Layout::rows([
@@ -168,30 +169,32 @@ class InvoiceEditScreen extends Screen
                         ->type('number')
                         ->placeholder('Invoice amount'),
 
-                    Upload::make('invoiceMeta.credit_note_file')
+                    Upload::make('invoice.credit_note_file')
                     ->title('Credit note file')
                     ->maxFiles(1)
                     //->maxFileSize(1024)
-                    ->groups('photo','documents'),    
+                    ->groups('photo','documents')
+                    ->targetId(),    
                 ]),
             ]),
             
             Layout::rows([
                 Group::make([
-                    Select::make('InvoiceAdditionalCost[description][]')
+                    Select::make('invoiceAdditionalCost.description.')
                         ->title('Charge line')
                         ->fromModel(AdditionalCharge::class, 'charges_line'),
-                    Input::make('InvoiceAdditionalCost[cost][]')
+                    Input::make('invoiceAdditionalCost.cost.')
                         ->title('Cost')
                         ->placeholder('cost'),
-                    Input::make('InvoiceAdditionalCost[vat][]')
+                    Input::make('invoiceAdditionalCost.vat.')
                     ->title('Vat')
                     ->placeholder('vat'),
-                    Upload::make('InvoiceAdditionalCost[attchment][]')
+                    Upload::make('invoiceAdditionalCost.attachment.')
                         ->title('Charge attachment')
                         ->maxFiles(1)
                         //->maxFileSize(1024)
-                        ->groups('photo','documents'), 
+                        ->groups('photo','documents')
+                        ->targetId(), 
                 ]),
             ]),
             Layout::component(CustomButton::class),
@@ -202,11 +205,6 @@ class InvoiceEditScreen extends Screen
 
     public function createOrUpdate(Invoice $invoice, Request $request)
     {   
-        //dd($request);
-        // $file = new File($request->file('invoiceMeta')['carrier_invoice']);
-        // $attachment = $file->load();
-        // dd($attachment);
-        //$invoice->fill($request->get('invoice'))->save();
         $response = $this->invoiceService->createInvoice($request);
         if(is_array($response)){
             Alert::info('You have successfully created an invoice.');

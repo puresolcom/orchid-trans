@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Auth;
 use App\Models\InvoiceProcess;
 use App\Models\InvoiceMeta;
+use App\Models\InvoiceAdditionalCost;
 
 class InvoiceService extends BaseService
 {
@@ -58,10 +59,45 @@ class InvoiceService extends BaseService
             /**
              * Storing additional costs
              */
-            // if ($request->has('description'))
-            // {
-            //     $this->saveDetails($request, $invoice);
-            // }
+            if ($request->has('invoiceAdditionalCost'))
+            {   //dd($request);
+                //dd($request->input('InvoiceAdditionalCost')['description'][0]);
+                foreach ($request->input('invoiceAdditionalCost')['description'] as $index => $description)
+                {   
+                    $invoiceInsertedId = InvoiceAdditionalCost::create([
+                        "invoice_id" => $invoice->id,
+                        "description" => $description,
+                        "cost" => $request->input('invoiceAdditionalCost')['cost'][$index],
+                        "vat" => $request->input('invoiceAdditionalCost')['vat'][$index]
+                    ]);
+                            
+                    // $invoiceInsertedId->attachment()->syncWithoutDetaching(
+                    //     $request->input('invoiceAdditionalCost.attachment', [])[$index]
+                    // );
+                }
+                // for ($i = 0; $i < 5; $i++)
+                // {   dd($request->input('invoiceAdditionalCost')['cost'][$i]);
+                //     $invoiceInsertedId = InvoiceAdditionalCost::create([
+                //         "invoice_id" => $invoice->id,
+                //         "description" => $request->input('InvoiceAdditionalCost')['description'][$i],
+                //         "cost" => $request->input('invoiceAdditionalCost')['cost'][$i],
+                //         "vat" => $request->input('invoiceAdditionalCost')['vat'][$i]
+                //     ]);
+                            
+                //     $invoiceInsertedId->attachment()->syncWithoutDetaching(
+                //         $request->input('invoiceAdditionalCost.attachment', [])[$i]
+                //     );
+                // }
+
+            }
+
+            $invoice->attachment()->syncWithoutDetaching(
+                $request->input('invoice.carrier_invoice', [])
+            );
+
+            $invoice->attachment()->syncWithoutDetaching(
+                $request->input('invoice.credit_note_file', [])
+            );
             
             $invoiceProcess=  InvoiceProcess::updateOrCreate(
                 [
@@ -122,23 +158,36 @@ class InvoiceService extends BaseService
         }
         
 
-        // $invoice->attachment()->create([
-        //     "attachment_id" => $request->input('invoiceMeta')['carrier_invoice'][0]
-        // ]);
-
-        // $invoice->attachment()->create([
-        //     "attachment_id" => $request->input('invoiceMeta')['credit_note_file'][0]
-        // ]);
-        
-
         }catch(\Exception $exception){
             \Log::debug($exception->getMessage());
             DB::rollback();
-            //return Redirect::back()->withErrors($exception->getMessage());
             return $exception->getMessage();
         }
         DB::commit();
 
         return $invoice->toArray();
+    }
+
+    /**
+     * Storing additional invoice details
+     *
+     * @param Request $request
+     * @param Invoice $invoice
+     */
+    public function saveDetails($request,$invoice)
+    {   
+        foreach ($request->input('invoiceAdditionalCost')['description'] as $index => $description)
+        {
+            $invoiceInsertedId = InvoiceAdditionalCost::create([
+                "invoice_id" => $invoice->id,
+                "description" => $description,
+                "cost" => $request->input('invoiceAdditionalCost')['cost'][$index],
+                "vat" => $request->input('invoiceAdditionalCost')['vat'][$index]
+            ]);
+                    
+            $invoiceInsertedId->attachment()->syncWithoutDetaching(
+                $request->input('invoiceAdditionalCost.attachment', [])[$index]
+            );
+        }
     }
 }
