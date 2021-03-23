@@ -9,6 +9,7 @@ use Orchid\Attachment\Attachable;
 use App\Models\InvoiceAdditionalCost;
 use App\Models\InvoiceProcess;
 use App\Models\InvoiceMeta;
+use Orchid\Attachment\Models\Attachment;
 
 class Invoice extends Model
 {
@@ -35,4 +36,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceAdditionalCost::class, 'invoice_id');
     }
+
+    // public function attachments()
+    // {
+    //     return $this->hasMany(Attachment::class,'id')->withDefault();
+    // }
 }

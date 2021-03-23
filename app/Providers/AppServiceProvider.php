@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Orchid\Platform\Dashboard;
+use App\Models\Invoice;
+use App\Observers\InvoiceObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dashboard $dashboard)
     {
         $dashboard->registerResource('scripts', asset('js/dashboard.js'));
+        Invoice::observe(InvoiceObserver::class);
     }
 }

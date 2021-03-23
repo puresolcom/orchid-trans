@@ -26,6 +26,7 @@ use Orchid\Attachment\File;
 use App\Services\Invoice\InvoiceService;
 use Redirect;
 use App\Models\InvoiceMeta;
+use Illuminate\Support\Facades\DB; 
 
 class InvoiceEditScreen extends Screen
 {
@@ -191,7 +192,7 @@ class InvoiceEditScreen extends Screen
                     ->placeholder('vat'),
                     Upload::make('invoiceAdditionalCost.attachment.')
                         ->title('Charge attachment')
-                        ->maxFiles(1)
+                        //->maxFiles(2)
                         //->maxFileSize(1024)
                         ->groups('photo','documents')
                         ->targetId(), 
@@ -215,7 +216,7 @@ class InvoiceEditScreen extends Screen
     }
 
     public function remove(Invoice $invoice)
-    {
+    {   DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $invoice->delete();
 
         Alert::info('You have successfully deleted the invoice.');
@@ -223,9 +224,4 @@ class InvoiceEditScreen extends Screen
         return redirect()->route('platform.invoice.list');
     }
 
-    public function addMore(){
-        return [
-            ChargeLine::class
-        ];
-    }
 }

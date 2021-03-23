@@ -62,17 +62,19 @@ class InvoiceService extends BaseService
             if ($request->has('invoiceAdditionalCost'))
             {   
                 foreach ($request->input('invoiceAdditionalCost')['description'] as $index => $description)
-                {   
+                {   //dd($request->input('invoiceAdditionalCost.attachment', [])[$index][$index]);
                     $invoiceInsertedId = InvoiceAdditionalCost::create([
                         "invoice_id" => $invoice->id,
                         "description" => $description,
                         "cost" => $request->input('invoiceAdditionalCost')['cost'][$index],
                         "vat" => $request->input('invoiceAdditionalCost')['vat'][$index]
                     ]);
-                            
-                    // $invoiceInsertedId->attachment()->syncWithoutDetaching(
-                    //     $request->input('invoiceAdditionalCost.attachment', [])[$index]
-                    // );
+                    
+                    // if($request->input('invoiceAdditionalCost.attachment', [])[$index][$index]){
+                    //     $invoiceInsertedId->attachment()->syncWithoutDetaching(
+                    //         $request->input('invoiceAdditionalCost.attachment', [])[$index][$index]
+                    //     );
+                    // }
                 }
 
             }
